@@ -1,0 +1,25 @@
+# -*- mode:org; ispell-dictionary:"en_GB"  -*-
+#+TITLE: flymake backend clj-kondo
+#+AUTHOR: https://turbocafe.keybase.pub
+
+this package integrates clj-kondo a clojure linter into emacs'
+flymake; get clj-kondo following [[https://github.com/borkdude/clj-kondo/blob/master/doc/install.md][installation instructions]]; 
+
+this package  isn't on  melpa, so emacs  has to load  it from  where i
+store flymake-kondor.el, i do it with use-package, like below
+
+#+BEGIN_SRC emasc-lisp
+(use-package flymake-kondor
+  :ensure flymake-quickdef
+  :after flymake
+  :load-path "~/.emacs.d/site-lisp/flymake-kondor"
+  :init
+  (add-hook 'clojure-mode-hook #'flymake-kondor-setup)
+  :config
+  (define-key flymake-mode-map (kbd "<f8>") 'flymake-goto-next-error)
+  (define-key flymake-mode-map (kbd "<f7>") 'flymake-goto-prev-error))
+#+END_SRC
+
+when in clojure-mode flymake-mode is activated and you can navigate to
+prev/next  error in  buffer;  there's [[https://github.com/borkdude/flycheck-clj-kondo][sister  project]] that  integrates
+clj-kondo into flycheck if you use that one
