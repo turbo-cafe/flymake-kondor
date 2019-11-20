@@ -14,7 +14,7 @@ instructions]]; then proceed with your preferred way of adding packages
   :hook (clojure-mode . flymake-kondor-setup))
 #+END_SRC
 
-* elget
+* github
 
 #+BEGIN_SRC emacs-lisp
 (el-get-bundle flymake-kondor
