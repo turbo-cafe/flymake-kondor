@@ -61,8 +61,7 @@
 ;;;###autoload
 (defun flymake-kondor-setup ()
   "Enable flymake backend."
-  (flymake-mode t)
-  (add-hook 'flymake-diagnostic-functions 'flymake-kondor-backend nil t))
+  (add-hook 'flymake-diagnostic-functions #'flymake-kondor-backend nil t))
 
 (provide 'flymake-kondor)
 
