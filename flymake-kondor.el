@@ -35,6 +35,7 @@
 
 ;;; Code:
 
+(require 'flymake)
 (require 'flymake-quickdef)
 
 (flymake-quickdef-backend flymake-kondor-backend
