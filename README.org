@@ -10,7 +10,7 @@ instructions]]; then proceed with your preferred way of adding packages
 
 #+BEGIN_SRC emacs-lisp
 (use-package flymake-kondor
-  :ensure t
+  :ensure flymake-quickdef
   :hook (clojure-mode . flymake-kondor-setup))
 #+END_SRC
 

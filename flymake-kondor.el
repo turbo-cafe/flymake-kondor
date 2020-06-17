@@ -1,4 +1,4 @@
-;;; flymake-kondor.el --- emacs linter with clj-kondo -*- lexical-binding: t; -*-
+;;; flymake-kondor.el --- Linter with clj-kondo -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2019 https://turbocafe.keybase.pub
 ;;
