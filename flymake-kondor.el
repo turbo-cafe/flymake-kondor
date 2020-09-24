@@ -39,10 +39,11 @@
 (require 'flymake-quickdef)
 
 (flymake-quickdef-backend flymake-kondor-backend
-  :pre-let ((kondor-exec (executable-find "clj-kondo")))
+  :pre-let ((kondor-exec (executable-find "clj-kondo"))
+            (lang (file-name-extension buffer-file-name)))
   :pre-check (unless kondor-exec (error "Not found clj-kondo on PATH"))
   :write-type 'pipe
-  :proc-form (list kondor-exec "--lint" "-")
+  :proc-form (list kondor-exec "--lint" "-" "--lang" lang)
   :search-regexp "^.+:\\([[:digit:]]+\\):\\([[:digit:]]+\\): \\([[:alpha:]]+\\): \\(.+\\)$"
   :prep-diagnostic
   (let* ((lnum (string-to-number (match-string 1)))
