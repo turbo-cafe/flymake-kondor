@@ -9,7 +9,8 @@ instructions]]; then proceed with your preferred way of adding packages
 * melpa
 
 #+BEGIN_SRC emacs-lisp
-(use-package flymake-kondor 
+(use-package flymake-kondor
+  :ensure t
   :hook (clojure-mode . flymake-kondor-setup))
 #+END_SRC
 
