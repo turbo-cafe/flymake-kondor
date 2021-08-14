@@ -4,7 +4,7 @@
 ;;
 ;; Author: https://turbocafe.keybase.pub
 ;; Created: 3 November 2019
-;; Version: 0.0.3
+;; Version: 0.1.0
 ;; Package-Requires: ((emacs "26.1"))
 ;; URL: https://github.com/turbo-cafe/flymake-kondor
 ;;; Commentary:
