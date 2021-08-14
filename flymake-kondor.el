@@ -5,7 +5,7 @@
 ;; Author: https://turbocafe.keybase.pub
 ;; Created: 3 November 2019
 ;; Version: 0.0.3
-;; Package-Requires: ((emacs "26.1") (flymake-quickdef "1.0.0"))
+;; Package-Requires: ((emacs "26.1"))
 ;; URL: https://github.com/turbo-cafe/flymake-kondor
 ;;; Commentary:
 
@@ -36,32 +36,60 @@
 ;;; Code:
 
 (require 'flymake)
-(require 'flymake-quickdef)
 
-(flymake-quickdef-backend flymake-kondor-backend
-  :pre-let ((kondor-exec (executable-find "clj-kondo"))
-            (lang (file-name-extension buffer-file-name)))
-  :pre-check (unless kondor-exec (error "Not found clj-kondo on PATH"))
-  :write-type 'pipe
-  :proc-form (list kondor-exec "--lint" "-" "--lang" lang)
-  :search-regexp "^.+:\\([[:digit:]]+\\):\\([[:digit:]]+\\): \\([[:alpha:]]+\\): \\(.+\\)$"
-  :prep-diagnostic
-  (let* ((lnum (string-to-number (match-string 1)))
-         (lcol (string-to-number (match-string 2)))
-         (severity (match-string 3))
-         (msg (match-string 4))
-         (pos (flymake-diag-region fmqd-source lnum lcol))
-         (beg (car pos))
-         (end (cdr pos))
-         (type (cond
-                ((string= severity "error") :error)
-                ((string= severity "warning") :warning)
-                ((string= severity "info") :note)
-                (t :note))))
-    (list fmqd-source beg end type msg)))
+(defvar-local flymake-kondor--flymake-proc nil)
+
+(defun flymake-kondor-backend (report-fn &rest _args)
+  "Build the Flymake backend for clj-kondo with REPORT-FN."
+  (unless (executable-find "clj-kondo")
+    (user-error "Executable clj-kondo not found on PATH"))
+
+  (when (process-live-p flymake-kondor--flymake-proc)
+    (kill-process flymake-kondor--flymake-proc))
+
+  (let* ((source (current-buffer))
+         (lang (file-name-extension (buffer-file-name source))))
+    (save-restriction
+      (widen)
+      (setq
+       flymake-kondor--flymake-proc
+       (make-process
+        :name "flymake-kondor" :noquery t :connection-type 'pipe
+        :buffer (generate-new-buffer " *flymake-kondor*")
+        :command `("clj-kondo" "--lint" "-" "--lang" ,lang)
+        :sentinel
+        (lambda (proc _event)
+          (when (eq 'exit (process-status proc))
+            (unwind-protect
+                (if (with-current-buffer source (eq proc flymake-kondor--flymake-proc))
+                    (with-current-buffer (process-buffer proc)
+                      (goto-char (point-min))
+                      (cl-loop
+                       while (search-forward-regexp
+                              "^.+:\\([[:digit:]]+\\):\\([[:digit:]]+\\): \\([[:alpha:]]+\\): \\(.+\\)$"
+                              nil t)
+                       for lnum = (string-to-number (match-string 1))
+                       for lcol = (string-to-number (match-string 2))
+                       for type = (let ((severity (match-string 3)))
+                                    (cond
+                                     ((string= severity "error") :error)
+                                     ((string= severity "warning") :warning)
+                                     ((string= severity "info") :note)
+                                     (t :note)))
+                       for msg = (match-string 4)
+                       for (beg . end) = (flymake-diag-region source lnum lcol)
+                       collect (flymake-make-diagnostic source beg end type msg)
+                       into diags
+                       finally (funcall report-fn diags)))
+                  (flymake-log :warning "Canceling obsolete check %s"
+                               proc))
+              (kill-buffer (process-buffer proc)))))))
+      (process-send-region flymake-kondor--flymake-proc (point-min) (point-max))
+      (process-send-eof flymake-kondor--flymake-proc))))
+
 ;;;###autoload
 (defun flymake-kondor-setup ()
-  "Enable flymake backend."
+  "Enable Flymake backend."
   (add-hook 'flymake-diagnostic-functions #'flymake-kondor-backend nil t))
 
 (provide 'flymake-kondor)
