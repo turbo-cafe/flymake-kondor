@@ -2,11 +2,11 @@
 #+TITLE: flymake backend clj-kondo
 #+AUTHOR: https://turbocafe.keybase.pub
 
-this  package  integrates  clj-kondo  a  clojure  linter  into  emacs'
-flymake;  to use  this  package get  clj-kondo following  [[https://github.com/borkdude/clj-kondo/blob/master/doc/install.md][installation
-instructions]]; then proceed with your preferred way of adding packages
+This package integrates clj-kondo a Clojure linter into Emacs' Flymake; to use
+it get clj-kondo following [[https://github.com/borkdude/clj-kondo/blob/master/doc/install.md][installation instructions]]; then proceed with your
+preferred way of adding packages.
 
-* melpa
+* MELPA
 
 #+BEGIN_SRC emacs-lisp
 (use-package flymake-kondor
@@ -14,7 +14,7 @@ instructions]]; then proceed with your preferred way of adding packages
   :hook (clojure-mode . flymake-kondor-setup))
 #+END_SRC
 
-* github
+* GitHub
 
 #+BEGIN_SRC emacs-lisp
 (el-get-bundle flymake-kondor
@@ -22,7 +22,7 @@ instructions]]; then proceed with your preferred way of adding packages
                (add-hook 'clojure-mode-hook #'flymake-kondor-setup))
 #+END_SRC
 
-* local
+* Local
 
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'load-path "~/path/to/flymake-kondor")
@@ -30,12 +30,11 @@ instructions]]; then proceed with your preferred way of adding packages
 (add-hook 'clojure-mode-hook #'flymake-kondor-setup)
 #+END_SRC
 
+* Note about Flymake
 
-* note about flymake
-
-to start linting  activate =M-x flymake-mode= in  clojure buffer; even
-better assign hook  and keys so you could navigate  to prev/next error
-in buffer instantly
+To start linting activate =M-x flymake-mode= in a Clojure buffer; even better
+assign hook and keys so you could navigate to the previous or next error in the
+buffer instantly.
 
 #+BEGIN_SRC emacs-lisp
 (use-package flymake
@@ -46,5 +45,5 @@ in buffer instantly
   :config (remove-hook 'flymake-diagnostic-functions #'flymake-proc-legacy-flymake))
 #+END_SRC
 
-there's [[https://github.com/borkdude/flycheck-clj-kondo][sister project]] that integrates  clj-kondo into flycheck
+There is a [[https://github.com/borkdude/flycheck-clj-kondo][sister project]] that integrates clj-kondo into Flycheck.
 
