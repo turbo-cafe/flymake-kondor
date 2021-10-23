@@ -1,8 +1,8 @@
 # -*- mode:org; ispell-dictionary:"en_GB"  -*-
-#+TITLE: flymake backend clj-kondo
+#+TITLE: flymake-kondor
 #+AUTHOR: https://turbocafe.keybase.pub
 
-This package integrates clj-kondo a Clojure linter into Emacs' Flymake; to use
+This package integrates clj-kondo a Clojure linter into Emacs' Flymake. To use
 it get clj-kondo following [[https://github.com/borkdude/clj-kondo/blob/master/doc/install.md][installation instructions]]; then proceed with your
 preferred way of adding packages.
 
